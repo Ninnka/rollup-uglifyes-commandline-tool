@@ -1,0 +1,24 @@
+{
+  "name": "rollup-uglifyes-commandline-tool",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "rpes": "bin/rpes.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "rpes": "node bin/rpes.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {},
+  "dependencies": {
+    "colors": "^1.2.1",
+    "commander": "^2.15.1",
+    "globby": "^8.0.1",
+    "rollup": "^0.57.1",
+    "rollup-plugin-uglify": "^3.0.0",
+    "uglify-es": "^3.3.9"
+  }
+}
