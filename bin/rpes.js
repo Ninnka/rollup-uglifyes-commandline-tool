@@ -10,12 +10,6 @@ const colors = require('colors');
 
 const platform = process.platform;
 
-let originSrcPath = path.resolve(__dirname, 'src/**/*.js');
-let replacePart = '';
-
-const outputPathPrefix = path.resolve(process.cwd(), 'dist').replace(/\\/g, '\/');
-// console.log('outputPathPrefix', outputPathPrefix);
-
 const commonSetting = {
   plugins: [
     uglify({
@@ -27,11 +21,24 @@ const commonSetting = {
   treeshake: false
 };
 
+// * 默认入口
+let originSrcPath = path.resolve(__dirname, 'src/**/*.js');
+
+// * 默认出口
+let outputPathPrefix = path.resolve(process.cwd(), 'dist').replace(/\\/g, '\/');
+
+// * 获取的出口
+let outputSpecified = '';
+
+// * 生成出口时需要替换的部分
+let replacePart = '';
+
+
 program
   .version('ruct v0.0.1', '-v, --version')
   // .option('-T, --type [type]', 'test options type [option-args]', 'option-args')
   .option('-i, --input [path]', 'Set file Or directory [path] to be resolved', originSrcPath)
-  .option('-o, --output', 'Set position where resolved file in')
+  .option('-o, --output [outpath]', 'Set position [outpath] where resolved file in', outputPathPrefix)
   .parse(process.argv);
 
 // * 入口
@@ -59,7 +66,15 @@ if (platform.indexOf('win') !== -1) {
 }
 
 // * 出口
-if (program.output) console.log('output');
+if (program.output) {
+  outputSpecified = program.output.replace(/\\\\/g, '\/').replace(/\\/g, '\/');
+  const reg = /[A-Za-z0-9]+:\//;
+  if (outputSpecified[0] === '/' || reg.test(outputSpecified)) {
+    outputSpecified = outputSpecified;
+  } else {
+    outputSpecified = path.resolve(process.cwd(), outputSpecified).replace(/\\\\/g, '\/').replace(/\\/g, '\/');
+  }
+}
 
 const configs = globby.sync(originSrcPath).map((inputFile) => {
   console.log('inputFile: '.blue, inputFile.blue);
@@ -68,7 +83,7 @@ const configs = globby.sync(originSrcPath).map((inputFile) => {
       input: inputFile,
     }, commonSetting),
     outputOptions: {
-      file: setOutputFileFilterByPlatform(inputFile),
+      file: outputSpecified ? setOutputFileBySpecified(inputFile) : setOutputFileFilterByPlatform(inputFile),
       format: 'cjs'
     }
   }
@@ -76,6 +91,10 @@ const configs = globby.sync(originSrcPath).map((inputFile) => {
 
 function setOutputFileFilterByPlatform (inputFile) {
   return inputFile.replace(replacePart, outputPathPrefix);
+}
+
+function setOutputFileBySpecified (inputFile) {
+  return inputFile.replace(replacePart, outputSpecified);
 }
 
 async function build(config) {
