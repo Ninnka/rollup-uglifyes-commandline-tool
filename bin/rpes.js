@@ -1,4 +1,4 @@
-#!/d/nodejs/node
+#!/bin/env node
 
 const path = require('path');
 const rollup = require('rollup');
