@@ -2,16 +2,16 @@
 
 > rollup-uglifyes-commandline-tool is a command-line tool for uglifing javascript(es6)
 
-## usage
+## Usage
 
 ```bash
-# install
-npm i
-# global
+# install rpes command to global environment
 npm link
+# help
+rpes --help
 ```
 
-## note
+## Precautions
 
 - default node path:
 
