@@ -13,10 +13,10 @@ rpes --help
 
 ## Precautions
 
-- default node path:
+- default node path env:
 
 ```bash
-/bin/env node
+/usr/bin/env node
 ```
 
 - if you need to change node path, modify the first line in bin/rpes.js
